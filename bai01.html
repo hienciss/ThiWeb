@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 01 - TODO Matrix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .user-info {
+            text-align: center;
+        }
+
+        .user-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-mssv {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Task Board */
+        .task-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .matrix-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 300px;
+        }
+
+        .matrix-box h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+        }
+
+        .matrix-box.priority-1 h3 {
+            color: #dc3545;
+            border-bottom-color: #dc3545;
+        }
+
+        .matrix-box.priority-2 h3 {
+            color: #ff9800;
+            border-bottom-color: #ff9800;
+        }
+
+        .matrix-box.priority-3 h3 {
+            color: #2196f3;
+            border-bottom-color: #2196f3;
+        }
+
+        .matrix-box.priority-4 h3 {
+            color: #4caf50;
+            border-bottom-color: #4caf50;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .info-panel {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .task-board {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="back-btn">← Quay lại trang chủ</a>
+        <h1>📋 TODO MATRIX - Ma trận Eisenhower</h1>
+    </div>
+
+    <div class="main-container">
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <img src="images/avatar.jpg" alt="Avatar" class="avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Ccircle cx=%2275%22 cy=%2275%22 r=%2275%22 fill=%22%23667eea%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2260%22 font-family=%22Arial%22%3ESV%3C/text%3E%3C/svg%3E'">
+            
+            <div class="user-info">
+                <div class="user-name" id="userName">Lê Ngọc Hiển</div>
+                <div class="user-mssv" id="userMSSV">MSSV: 231A010434</div>
+            </div>
+
+            <div class="input-group">
+                <label for="taskName">Tên công việc:</label>
+                <input type="text" id="taskName" placeholder="Nhập tên công việc...">
+            </div>
+
+            <div class="input-group">
+                <label for="priority">Độ ưu tiên:</label>
+                <select id="priority">
+                    <option value="1">1 - Quan trọng & Khẩn cấp</option>
+                    <option value="2">2 - Quan trọng - Không khẩn cấp</option>
+                    <option value="3">3 - Không quan trọng - Khẩn cấp</option>
+                    <option value="4">4 - Không quan trọng - Không khẩn cấp</option>
+                </select>
+            </div>
+
+            <button class="add-btn" onclick="addTask()">➕ Thêm công việc</button>
+        </div>
+
+        <!-- Task Board -->
+        <div class="task-board">
+            <div class="matrix-box priority-1">
+                <h3>🔴 Quan trọng & Khẩn cấp</h3>
+                <div id="tasks-1"></div>
+            </div>
+
+            <div class="matrix-box priority-2">
+                <h3>🟠 Quan trọng - Không khẩn cấp</h3>
+                <div id="tasks-2"></div>
+            </div>
+
+            <div class="matrix-box priority-3">
+                <h3>🔵 Không quan trọng - Khẩn cấp</h3>
+                <div id="tasks-3"></div>
+            </div>
+
+            <div class="matrix-box priority-4">
+                <h3>🟢 Không quan trọng - Không khẩn cấp</h3>
+                <div id="tasks-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CẤU HÌNH: Thay đổi MSSV của bạn ở đây
+        const MSSV = '231A010434'; 
+        const STUDENT_NAME = 'Lê Ngọc Hiển '; 
+
+        // Cập nhật thông tin sinh viên
+        document.getElementById('userName').textContent = STUDENT_NAME;
+        document.getElementById('userMSSV').textContent = `MSSV: ${MSSV}`;
+
+        // Lấy số cuối MSSV để xác định màu chữ
+        const lastDigit = parseInt(MSSV.slice(-1));
+        const isEven = lastDigit % 2 === 0;
+        const LONG_TEXT_COLOR = isEven ? '#dc3545' : '#2196f3'; 
+
+        // LocalStorage key
+        const STORAGE_KEY = `tasks_${MSSV}`;
+
+        // Load tasks từ LocalStorage
+        function loadTasks() {
+            const savedTasks = localStorage.getItem(STORAGE_KEY);
+            return savedTasks ? JSON.parse(savedTasks) : [];
+        }
+
+        // Save tasks vào LocalStorage
+        function saveTasks(tasks) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        // Render tất cả tasks
+        function renderTasks() {
+            const tasks = loadTasks();
+            
+            // Clear tất cả các ô
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`tasks-${i}`).innerHTML = '';
+            }
+
+            // Render từng task
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-item';
+                
+                const taskText = document.createElement('div');
+                taskText.className = 'task-text';
+                taskText.textContent = task.name;
+                
+                // Logic chống AI: Đổi màu nếu độ dài > 10 ký tự
+                if (task.name.length > 10) {
+                    taskText.style.color = LONG_TEXT_COLOR;
+                    taskText.style.fontWeight = 'bold';
+                }
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '🗑️ Xóa';
+                deleteBtn.onclick = () => deleteTask(index);
+                
+                taskElement.appendChild(taskText);
+                taskElement.appendChild(deleteBtn);
+                
+                // Thêm vào đúng ô matrix
+                document.getElementById(`tasks-${task.priority}`).appendChild(taskElement);
+            });
+        }
+
+        // Thêm task mới
+        function addTask() {
+            const taskName = document.getElementById('taskName').value.trim();
+            const priority = document.getElementById('priority').value;
+
+            if (!taskName) {
+                alert('⚠️ Vui lòng nhập tên công việc!');
+                return;
+            }
+
+            const tasks = loadTasks();
+            tasks.push({
+                name: taskName,
+                priority: priority
+            });
+
+            saveTasks(tasks);
+            renderTasks();
+
+            // Clear input
+            document.getElementById('taskName').value = '';
+            document.getElementById('priority').value = '1';
+
+            // Focus vào input để tiện nhập tiếp
+            document.getElementById('taskName').focus();
+        }
+
+        // Xóa task
+        function deleteTask(index) {
+            if (confirm('Bạn có chắc muốn xóa công việc này?')) {
+                const tasks = loadTasks();
+                tasks.splice(index, 1);
+                saveTasks(tasks);
+                renderTasks();
+            }
+        }
+
+        // Cho phép nhấn Enter để thêm task
+        document.getElementById('taskName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Load tasks khi trang được tải
+        renderTasks();
+
+        // Log thông tin để kiểm tra logic
+        console.log('=== THÔNG TIN LOGIC CHỐNG AI ===');
+        console.log('MSSV:', MSSV);
+        console.log('Số cuối MSSV:', lastDigit);
+        console.log('Là số chẵn?', isEven);
+        console.log('Màu chữ cho text > 10 ký tự:', LONG_TEXT_COLOR);
+        console.log('LocalStorage Key:', STORAGE_KEY);
+    </script>
+</body>
+</html>
